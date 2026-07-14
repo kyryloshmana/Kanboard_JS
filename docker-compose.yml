@@ -1,0 +1,11 @@
+services:
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
+    environment:
+      - BASE_URL=http://host.docker.internal:81
+      - DOCKER=true
+    volumes:
+      - ./playwright-report:/app/playwright-report
+      - ./test-results:/app/test-results

@@ -1,0 +1,74 @@
+# FROM mcr.microsoft.com/playwright:v1.60.0-noble
+
+# WORKDIR /app
+
+# COPY package*.json ./
+# RUN npm ci
+
+# COPY . .
+
+# ENV DOCKER=true
+
+# CMD ["npx", "playwright", "test"]
+
+# ---- Stage 1: builder ----
+# Тут ставимо npm-залежності та браузери Playwright.
+# Використовуємо звичайний node-образ, а не важкий mcr.microsoft.com/playwright,
+# щоб не тягнути в фінальний образ усі три браузери одразу.
+FROM node:20-slim AS builder
+
+WORKDIR /app
+
+# Системні залежності, потрібні для встановлення браузерів
+# (шрифти, бібліотеки рендерингу тощо). Без --with-deps на Debian/Ubuntu
+# частина браузерів просто не запуститься.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+
+# Ставимо тільки chromium — активний проєкт у playwright.config.ts.
+# --with-deps підтягує системні бібліотеки, потрібні саме для chromium.
+RUN npx playwright install --with-deps chromium
+
+# Якщо колись розкоментуєш інші браузери в playwright.config.ts (projects),
+# додай їх сюди аналогічно:
+#
+#   RUN npx playwright install --with-deps firefox
+#   RUN npx playwright install --with-deps webkit
+#
+# Або одним рядком для всіх одразу (простіше, але важче — тягне всі три):
+#   RUN npx playwright install --with-deps chromium firefox webkit
+#
+# webkit на Debian/slim-образах іноді вимагає більше системних пакетів
+# (libwoff1, libopus0, libwebpdemux2 та інші) — якщо не запуститься,
+# найнадійніший варіант це повернутись на офіційний
+# mcr.microsoft.com/playwright:v1.60.0-noble образ, де все це вже є.
+
+# ---- Stage 2: runtime ----
+# Легший фінальний шар: без apt-кешу, build tools і npm-кешу з першого stage.
+FROM node:20-slim
+
+WORKDIR /app
+
+# Системні залежності потрібні і в рантаймі (браузер їх використовує під час запуску,
+# не тільки при встановленні), тому копіюємо їх сюди ж.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Копіюємо готові node_modules (з уже встановленим Playwright) та браузери
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /root/.cache/ms-playwright /root/.cache/ms-playwright
+COPY --from=builder /app/package*.json ./
+COPY . .
+
+ENV DOCKER=true
+
+CMD ["npx", "playwright", "test"]
