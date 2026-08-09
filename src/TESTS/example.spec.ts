@@ -31,70 +31,72 @@ dotenv.config();
 
 // // })
 
-const ids =  [
- 883]
-for (let id of ids) {
-    test(`delete users - ${id}`, async ({request}) => {
-        const credentials = Buffer.from('admin:admin').toString('base64');
+////
+
+// const ids =  [
+//  883]
+// for (let id of ids) {
+//     test(`delete users - ${id}`, async ({request}) => {
+//         const credentials = Buffer.from('admin:admin').toString('base64');
 
 
-        const newIssue = await request.post('/jsonrpc.php', {
-
-  
-            headers: {
-                'Authorization': `Basic ${credentials}`,
-                'Content-Type': 'application/json',
-            },
-
-            data: {
-                jsonrpc: "2.0",
-                method: "removeUser",
-                id: 2094191872,
-                params: {
-                    user_id: id
-                }
-            }
-        }
-  
-        )
-
-        console.log('Status:', newIssue.status());
-        console.log('Body:', await newIssue.json());
-  
-
-        expect(newIssue.ok()).toBeTruthy();
-    })
-}
-
-test('get users', async ({ request }) => {
-  const credentials = Buffer.from('jsonrpc:d763c3e57d92da72762f03df1cf2604b98e79d506e5bcf869d86de16c527').toString('base64');
-
-  const newIssue = await request.post('/jsonrpc.php', {
-    headers: {
-      'Authorization': `Basic ${credentials}`,
-      'Content-Type': 'application/json',
-    },
-
-    data: {
-      jsonrpc: "2.0",
-      method: "getAllUsers",
-      id: 1438712131
-
-    }
-  })
-
-      console.log('Status:', newIssue.status());
-      console.log('Body:', await newIssue.json());
+//         const newIssue = await request.post('/jsonrpc.php', {
 
   
+//             headers: {
+//                 'Authorization': `Basic ${credentials}`,
+//                 'Content-Type': 'application/json',
+//             },
 
-  const body = await newIssue.json();
-  const userIds: number[] = body.result.map((user: { id: number }) => user.id);
-  console.log(userIds);
+//             data: {
+//                 jsonrpc: "2.0",
+//                 method: "removeUser",
+//                 id: 2094191872,
+//                 params: {
+//                     user_id: id
+//                 }
+//             }
+//         }
+  
+//         )
 
-  expect(newIssue.ok()).toBeTruthy();
+//         console.log('Status:', newIssue.status());
+//         console.log('Body:', await newIssue.json());
+  
 
-})
+//         expect(newIssue.ok()).toBeTruthy();
+//     })
+// }
+
+// test('get users', async ({ request }) => {
+//   const credentials = Buffer.from('jsonrpc:d763c3e57d92da72762f03df1cf2604b98e79d506e5bcf869d86de16c527').toString('base64');
+
+//   const newIssue = await request.post('/jsonrpc.php', {
+//     headers: {
+//       'Authorization': `Basic ${credentials}`,
+//       'Content-Type': 'application/json',
+//     },
+
+//     data: {
+//       jsonrpc: "2.0",
+//       method: "getAllUsers",
+//       id: 1438712131
+
+//     }
+//   })
+
+//       console.log('Status:', newIssue.status());
+//       console.log('Body:', await newIssue.json());
+
+  
+
+//   const body = await newIssue.json();
+//   const userIds: number[] = body.result.map((user: { id: number }) => user.id);
+//   console.log(userIds);
+
+//   expect(newIssue.ok()).toBeTruthy();
+
+// })
 
 
 
