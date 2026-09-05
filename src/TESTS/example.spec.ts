@@ -1,6 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { request } from 'node:http';
 import dotenv from 'dotenv';
+//import {generateProjectData} from '../API/builders/DataBuilder'
+import { logger } from '../API/builders/Logger';
+
+
 dotenv.config();
 
 // test('has title', async ({ page }) => {
@@ -317,3 +321,12 @@ test('Enable public access for a given project', async ({ request }) => {
   
   expect(newIssue.ok()).toBeTruthy();
 })
+
+
+
+
+// test('test', async ({}) => {
+//          const projectData = generateProjectData({"description": undefined})
+//           logger.debug({ projectData })
+// })
+

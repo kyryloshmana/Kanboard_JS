@@ -3,7 +3,7 @@ import {ApiRequest, ApiResponse,ApiResponseBody} from '../types/api.types'
 import { z } from 'zod';
 import { logger } from '../builders/Logger'
 
-const log = logger.child({module: "UserApiProcedures"})
+const log = logger.child({module: "Call to API"})
 
 export abstract class BaseApiClient{
     private readonly endpoint = '/jsonrpc.php';
