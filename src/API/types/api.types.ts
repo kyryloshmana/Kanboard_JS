@@ -35,7 +35,22 @@ export interface CreatedUser{
     password: string;
 }
 
+export interface ProjectData{
+    name: string;
+    description?: string;
+    owner_id?: number;
+    identifier?: string;
+    start_date?: string; 
+    end_date?: string;
+    priority_default?: number;
+    priority_start?: number;
+    priority_end?: number;
+    email?: string;
+}
 
+export interface CreatedProject{
+    id: number;
+}
 // //---- Zod Schemas ---
 
 // export const UserIdSchema = z.object({

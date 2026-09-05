@@ -1,8 +1,5 @@
 import { ApiResponse, User, UserData, UserSchema} from '../types/api.types'
-import { logger } from '../builders/Logger'
 import { BaseApiClient } from './BaseApiClient';
-
-const log = logger.child({module: "UserApiProcedures"})
 
 export class UserApiProcedures extends BaseApiClient{
 

@@ -1,10 +1,10 @@
-import { test as base } from '@playwright/test';
-import {request as playwrightRequest} from '@playwright/test'
+import { test as apiContextTest } from './apiContext.fixtures';
 import { UserApiProcedures } from "../clients/UserApiProcedures";
 import { generateUserData } from '../builders/DataBuilder';
 import { UserData, CreatedUser } from '../types/api.types';
 import { logger } from '../builders/Logger';
 import { cleanUpUsers } from '../builders/Helpers';
+
 const log = logger.child({module: "fixtures"})
 
 
@@ -15,18 +15,11 @@ type UserApiFixtures = {
 }
 
 
-export const test = base.extend<UserApiFixtures>({
+export const test = apiContextTest.extend<UserApiFixtures>({
 
-    userApi: async ({}, use) => {
+    userApi: async ({apiContext}, use) => {
         logger.debug("userApi fixtures: setup")
 
-        const apiContext = await playwrightRequest.newContext({
-            baseURL: process.env.BASE_URL ?? 'http://localhost:81',
-            extraHTTPHeaders: {
-                'Authorization': `Basic ${Buffer.from('jsonrpc:d763c3e57d92da72762f03df1cf2604b98e79d506e5bcf869d86de16c527').toString('base64')}`,
-                'Content-Type': 'application/json',
-    },
-        })
         const userApi = new UserApiProcedures(apiContext);
         await use(userApi)
         logger.debug("userApi fixtures:teardown")
